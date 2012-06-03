@@ -22,7 +22,7 @@
 		top: 10px;
 		z-index: 1;
 	}
-	table {
+	.tablerecipe {
 		border-collapse: separate;
 		border-spacing: 0;
 	}

@@ -4,10 +4,11 @@ Plugin Name: Wordpress Minecraft Integration
 Plugin URI: http://craft.micoli.org
 Description: Basic interface between wordpress and bukkit server
 Author: o.michaud
-Version: 0.1
+Version: 0.2
 Author URI: http://craft.micoli.org
 */
-include_once "lib/morg_wp_plugin.php";
+include_once dirname(__FILE__)."/../morg_wp_plugin/morg_wp_plugin.php";
+
 
 
 class morg_web_interface extends morg_wp_plugin{
@@ -22,6 +23,21 @@ class morg_web_interface extends morg_wp_plugin{
 			"function"	=>"admin__main"
 		)
 	);
+	
+	function __construct(){
+		parent::__construct();
+		$this->jsonapi = new JSONAPI(
+			get_option('morg_ah_jsonapi_host'		),
+			get_option('morg_ah_jsonapi_port'		),
+			get_option('morg_ah_jsonapi_user'		),
+			get_option('morg_ah_jsonapi_password'	),
+			get_option('morg_ah_jsonapi_salt'		)
+		);
+	}
+
+	function wp_enqueue_script__localplancss() {
+		wp_enqueue_style ( 'localplancss'		, get_site_url().'/wp-content/plugins/minecraft-wp-WebInterface/localplan.css');
+	}
 	
 	function admin__main() {
 		if($_POST['morg_wi_hidden'] == 'Y') {
@@ -232,7 +248,7 @@ class morg_web_interface extends morg_wp_plugin{
 			'index.php?pagename='.get_option('morg_wi_heroes_page').'&hero_mode=player&hero_player=$matches[1]', 
 			'top'
 		);
-		$wp_rewrite->flush_rules(false);
+		//$wp_rewrite->flush_rules(false);
 	}
 	
 	function shortcode__heroes($atts, $content = null) {
@@ -254,13 +270,13 @@ class morg_web_interface extends morg_wp_plugin{
 			$hero_mode = 'list';
 		}
 		include('skin2/backend/backend.php');
-		
+		$exportPath='/var/www/wp/wp-content/export/images';
 		$smarty = self::getSmarty(__FILE__);
 		$data = array('morg_wi_url_root'=>get_option('morg_wi_url_root'));
 		switch ($hero_mode){
 			case 'list':
 				foreach($allHeroes as $name=>$hero){
-					minecraft_skin_download($name);
+					minecraft_skin_download($exportPath,$name);
 				}
 				$data['heroes']	=$allHeroes;
 				$template='templates/heroes_list.tpl';
@@ -279,11 +295,11 @@ class morg_web_interface extends morg_wp_plugin{
 				$data['hero'] = $allHeroes[$name];
 				$data['hero']['name']=$name;
 				$data['hero']['imgName']=$name;
-				if(!file_exists(dirname(__FILE__).'/skin2/images/skins/'.$name.'/base.png')){
+				if(!file_exists($exportPath.'/skins/'.$name.'/base.png')){
 					$data['hero']['imgName']="Notch";
 				}
-				if(isset($refresh)) minecraft_skin_delete($name);
-				minecraft_skin_download($name);
+				if(isset($refresh)) minecraft_skin_delete($exportPath,$name);
+				minecraft_skin_download($exportPath,$name);
 				$template='templates/heroes_player.tpl';
 			break;
 		}
@@ -313,13 +329,17 @@ class morg_web_interface extends morg_wp_plugin{
 		global $wp;
 	
 		extract(shortcode_atts(array(
+			'uid'=>'mcmap'
 		), $atts));
 		if(array_key_exists('lp_mode',$wp->query_vars)){
 			$lp_mode = $wp->query_vars['lp_mode'];
 		}else{
 			$lp_mode = 'list_world';
 		}
-		$allParcels = json_decode(file_get_contents(get_option('morg_wi_export_folder').'localPlan/__allparcels.json'));
+		$result = $this->jsonapi->call("webInterface.localplanParcels",array());
+
+		//$allParcels = json_decode(file_get_contents(get_option('morg_wi_export_folder').'localPlan/__allparcels.json'));
+		$allParcels = $result['success'];
 		if(is_object($allParcels) or is_array($allParcels)){
 			$allParcels = morg_wp_tools::object2array($allParcels);
 		}else{
@@ -328,8 +348,9 @@ class morg_web_interface extends morg_wp_plugin{
 		}
 		$smarty = self::getSmarty(__FILE__);
 		$data = array(
-			'morg_wi_url_root'=>get_option('morg_wi_url_root'),
-			'morg_wi_localplan_page'=>get_option('morg_wi_localplan_page')
+			'morg_wi_url_root'		=> get_option('morg_wi_url_root'),
+			'morg_wi_localplan_page'=> get_option('morg_wi_localplan_page'),
+			'uid'					=> $uid
 		);
 		switch ($lp_mode){
 			case 'list_world';
@@ -337,7 +358,8 @@ class morg_web_interface extends morg_wp_plugin{
 				foreach($allParcels as $parcel){
 					$allWorld[$parcel['world']]++;
 				}
-				$data['worlds']=$allWorld;
+				$data['worlds'	]=$allWorld;
+				$data['uid'		]=$uid;
 				$template='templates/localplan_list_world.tpl';
 			break;
 			case 'view_world';

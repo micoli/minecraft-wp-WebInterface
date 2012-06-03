@@ -1,0 +1,26 @@
+.localplan .parcelimg{
+	float:left;
+	border:1px solid #AAA;
+	box-shadow: 8px 8px 5px #888;
+}
+.localplan .divtitle{
+	clear:both;
+	font-weight:bold;
+}
+.localplan .divtxt{
+	float:left;
+	width:160px
+}
+.localplan  .divtxt ul {
+	margin-left: 1.3em;
+	padding-top: 0;
+	width: 10em;
+}
+.localplan .divtxt ul{
+	font-weight:normal;
+}
+.localplan  .divcell{
+	float:left;
+	width:31%;
+	padding:5px;
+}

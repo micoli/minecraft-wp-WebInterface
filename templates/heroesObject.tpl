@@ -1,7 +1,7 @@
-<script src="/wp/wp-content/plugins/minecraft-WebInterface/skin2/backend/resources/jquery-1.5.1.min.js"></script>
-<script src="/wp/wp-content/plugins/minecraft-WebInterface/skin2/backend/resources/jquery-cookie.min.js"></script>
-<script type="text/javascript" src="/wp/wp-content/plugins/minecraft-WebInterface/skin2/backend/resources/3d/Three.js"></script>
-<script type="text/javascript" src="/wp/wp-content/plugins/minecraft-WebInterface/skin2/backend/resources/3d/RequestAnimationFrame.js"></script>
+<script src="/wp/wp-content/plugins/minecraft-wp-WebInterface/skin2/backend/resources/jquery-1.5.1.min.js"></script>
+<script src="/wp/wp-content/plugins/minecraft-wp-WebInterface/skin2/backend/resources/jquery-cookie.min.js"></script>
+<script type="text/javascript" src="/wp/wp-content/plugins/minecraft-wp-WebInterface/skin2/backend/resources/3d/Three.js"></script>
+<script type="text/javascript" src="/wp/wp-content/plugins/minecraft-wp-WebInterface/skin2/backend/resources/3d/RequestAnimationFrame.js"></script>
 {literal}
 <span id="divRenderer" style="height:200px;width:200px;border:red solid 1px;float:right;"></span>
 <script type="text/javascript">
@@ -32,7 +32,7 @@ function minecraftPlayer() {
   
   this.init= function() {
     this.nameStr = '{/literal}{$data.name}{literal}';
-    this.userImagePath = '/wp/wp-content/plugins/minecraft-WebInterface/skin2/images/skins/'+this.nameStr;
+    this.userImagePath = '/wp/wp-content/plugins/minecraft-wp-WebInterface/skin2/images/skins/'+this.nameStr;
     this.camera = new THREE.Camera(20, this.container.innerWidth / this.container.innerHeight, 1, 1000 );
     this.camera.target.position.x = 0;
     this.camera.target.position.y = -11;

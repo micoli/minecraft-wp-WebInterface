@@ -3,7 +3,7 @@
 <li>
 	<b>
 		<a href="./player/{$name}/">
-		<img style="width:32px;height:32px;" src="{$data.morg_wi_url_root}../plugins/minecraft-WebInterface/skin2/images/skins/{$name}/head_front.png">
+		<img style="width:32px;height:32px;" src="{$data.morg_wi_url_root}../plugins/minecraft-wp-WebInterface/skin2/images/skins/{$name}/head_front.png">
 		{$name|lower|capitalize}</a>
 	</b>&nbsp;
 	<i>{$hero.class}</i>

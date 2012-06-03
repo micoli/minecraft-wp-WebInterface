@@ -11,7 +11,7 @@ if(isset($_GET['refresh']) && $user == "") {
 	exit;
 }
 
-function minecraft_skin_3d_part($original, $user, $xpos, $ypos, $width, $height, $texturesize, $name, $flipx, $flipy) {
+function minecraft_skin_3d_part($exportPath,$original, $user, $xpos, $ypos, $width, $height, $texturesize, $name, $flipx, $flipy) {
 	$temp = imagecreatetruecolor($texturesize,$texturesize);
 	$trans = imagecolorallocatealpha($temp,255,255,255,127);
 	$x = $xpos;
@@ -51,28 +51,29 @@ function minecraft_skin_3d_part($original, $user, $xpos, $ypos, $width, $height,
 		imagefilledrectangle($temp,0,0,$texturesize,$texturesize,$trans);
 	}
 	//Save Image
-	imagepng($temp, dirname(__FILE__)."/../images/skins/".$user."/".$name.".png");
+	imagepng($temp, $exportPath."/skins/".$user."/".$name.".png");
 	imagedestroy($temp);
 }
 
-function minecraft_skin_download($user) {
-	if(!file_exists('images/skins/'.$user.'/base.png')) {
+function minecraft_skin_download($exportPath,$user) {
+	if(!file_exists($exportPath.'/skins/'.$user.'/base.png')) {
 		$userImg = $user;
 		if(!@getimagesize('http://s3.amazonaws.com/MinecraftSkins/'.$user.'.png')){
 			$userImg="Notch";
 		}
 		if(@getimagesize('http://s3.amazonaws.com/MinecraftSkins/'.$user.'.png')) {
 			//Make a new directory
-			If(!is_dir(dirname(__FILE__).'/../images/skins/'.$user)) {
-				mkdir(dirname(__FILE__).'/../images/skins/'.$user,0777);
+			If(!is_dir($exportPath.'/skins/'.$user)) {
+				print $exportPath.'/skins/'.$user;
+				mkdir($exportPath.'/skins/'.$user,0777);
 			}
 			//Download the skin from Minecraft.net and put it in /images/skins/
 			$url = 'http://s3.amazonaws.com/MinecraftSkins/'.$user.'.png';
-			$img = dirname(__FILE__).'/../images/skins/'.$user.'/base.png';
+			$img = $exportPath.'/skins/'.$user.'/base.png';
 			file_put_contents($img, file_get_contents($url));
 			 
 			//Create another image twice the size
-			$original = imagecreatefrompng(dirname(__FILE__).'/../images/skins/'.$userImg.'/base.png');
+			$original = imagecreatefrompng($exportPath.'/skins/'.$userImg.'/base.png');
 			 
 			/////////////////////////
 			// Body Parts (for 3D) //
@@ -133,8 +134,8 @@ function minecraft_skin_download($user) {
 	}
 }
 
-function minecraft_skin_delete($user) {
-	rrmdir(dirname(__FILE__).'/../images/skins/'.$user);
+function minecraft_skin_delete($exportPath,$user) {
+	rrmdir($exportPath.'/skins/'.$user);
 }
 
 // Functions not created by me
