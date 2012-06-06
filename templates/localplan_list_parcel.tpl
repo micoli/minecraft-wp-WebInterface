@@ -2,7 +2,7 @@
 <div class="localplan" style="display:block;">
 {foreach from=$data.parcels item=parcel}
 <div class="divcell" style="{cycle values="clear:both;,,"}">
-	<div class="divtitle"><a href="#" class=" dynmapcoord" rel="{ldelim}'container':'#{$data.uid}','world':'{$data.world}','map':'surface','zoom':6,'x':{$parcel.baryX},'y':64,z:{$parcel.baryZ}{rdelim}">{$parcel.regionId}</a></div>
+	<div class="divtitle"><a href="#" class=" dynmapcoord" rel="{ldelim}'container':'#{$data.uid}','world':'{$data.world}','map':'surface','zoom':2,'x':{$parcel.baryX},'y':64,z:{$parcel.baryZ}{rdelim}">{$parcel.regionId}</a></div>
 	<img class="parcelimg" style="width:100px" src="{$data.morg_wi_url_root}/localPlan/{$parcel.world}__{$parcel.regionId}.png">
 	<div class="divtxt">
 		<ul>

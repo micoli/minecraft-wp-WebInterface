@@ -8,7 +8,7 @@
 				<li>{if $data.parcel.owner}owner : {$data.parcel.owner}, {/if}{$data.parcel.buyStatus|lower|capitalize}</li>
 				<li>price : {$data.parcel.price}</li>
 				<li>
-					<a href="#" class=" dynmapcoord" rel="{ldelim}'container':'#{$data.uid}','world':'{$data.world}','map':'surface','zoom':6,'x':{$data.parcel.baryX},'y':64,z:{$data.parcel.baryZ}{rdelim}">
+					<a href="#" class=" dynmapcoord" rel="{ldelim}'container':'#{$data.uid}','world':'{$data.world}','map':'surface','zoom':2,'x':{$data.parcel.baryX},'y':64,z:{$data.parcel.baryZ}{rdelim}">
 						onMap
 					</a>
 				</li>		

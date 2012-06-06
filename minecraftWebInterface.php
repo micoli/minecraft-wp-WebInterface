@@ -41,30 +41,31 @@ class morg_web_interface extends morg_wp_plugin{
 	
 	function admin__main() {
 		if($_POST['morg_wi_hidden'] == 'Y') {
-			$export_folder = $_POST['morg_wi_export_folder'];
-			update_option('morg_wi_export_folder', $export_folder);
-
-			$url_root = $_POST['morg_wi_url_root'];
-			update_option('morg_wi_url_root', $url_root);
-
-			$export_root = $_POST['morg_wi_export_root'];
-			update_option('morg_wi_export_root', $export_root);
-
-			$heroes_page = $_POST['morg_wi_heroes_page'];
-			update_option('morg_wi_heroes_page', $heroes_page);
-
-			$localplan_page = $_POST['morg_wi_localplan_page'];
-			update_option('morg_wi_localplan_page', $localplan_page);
-
+			update_option('morg_wi_export_folder', $_POST['morg_wi_export_folder']);
+			update_option('morg_wi_url_root', $_POST['morg_wi_url_root']);
+			update_option('morg_wi_export_root', $_POST['morg_wi_export_root']);
+			update_option('morg_wi_heroes_page', $_POST['morg_wi_heroes_page']);
+			update_option('morg_wi_localplan_page', $_POST['morg_wi_localplan_page']);
+			update_option('morg_ah_jsonapi_host'	, $_POST['morg_ah_jsonapi_host']);
+			update_option('morg_ah_jsonapi_user'	, $_POST['morg_ah_jsonapi_user']);
+			update_option('morg_ah_jsonapi_password', $_POST['morg_ah_jsonapi_password']);
+			update_option('morg_ah_jsonapi_port'	, $_POST['morg_ah_jsonapi_port']);
+			update_option('morg_ah_jsonapi_salt'	, $_POST['morg_ah_jsonapi_salt']);
+			
 			print sprintf('<div class="updated"><p><strong>%s</strong></p></div>', __('Options saved.' ));
 		}
-		$morg_wi_export_folder	= get_option('morg_wi_export_folder',realpath(dirname(__FILE__))."/export/items/");
-		$defaultUrl				= realpath(dirname(__FILE__))."/export/";
-		$morg_wi_url_root		= get_option('morg_wi_url_root',get_option('siteurl','').'/'.substr($defaultUrl,strpos($defaultUrl,"wp-content")));
-		$defaultUrl				= realpath(dirname(__FILE__))."/";
-		$morg_wi_export_root	= get_option('morg_wi_export_root',get_option('siteurl','').'/'.substr($defaultUrl,strpos($defaultUrl,"wp-content")).'image');
-		$morg_wi_heroes_page	= get_option('morg_wi_heroes_page','heroes');
-		$morg_wi_localplan_page	= get_option('morg_wi_localplan_page','localplan');
+		$morg_wi_export_folder		= get_option('morg_wi_export_folder',realpath(dirname(__FILE__))."/export/items/");
+		$defaultUrl					= realpath(dirname(__FILE__))."/export/";
+		$morg_wi_url_root			= get_option('morg_wi_url_root',get_option('siteurl','').'/'.substr($defaultUrl,strpos($defaultUrl,"wp-content")));
+		$defaultUrl					= realpath(dirname(__FILE__))."/";
+		$morg_wi_export_root		= get_option('morg_wi_export_root',get_option('siteurl','').'/'.substr($defaultUrl,strpos($defaultUrl,"wp-content")).'image');
+		$morg_wi_heroes_page		= get_option('morg_wi_heroes_page','heroes');
+		$morg_wi_localplan_page		= get_option('morg_wi_localplan_page','localplan');
+		$morg_ah_jsonapi_host		= get_option('morg_ah_jsonapi_host'		,"127.0.0.1");
+		$morg_ah_jsonapi_port		= get_option('morg_ah_jsonapi_port'		,"20059");
+		$morg_ah_jsonapi_user		= get_option('morg_ah_jsonapi_user'		,"user");
+		$morg_ah_jsonapi_password	= get_option('morg_ah_jsonapi_password'	,"password");
+		$morg_ah_jsonapi_salt		= get_option('morg_ah_jsonapi_salt'		,"salt goes here");
 		
 		$form = "
 				<div class=\"wrap\">
@@ -79,6 +80,12 @@ class morg_web_interface extends morg_wp_plugin{
 				<hr />
 				<p>". __("Heroes page: "		)."<input type=\"text\" name=\"morg_wi_heroes_page\" 	value=\""	.$morg_wi_heroes_page		."\" size=\"90\">". __(" ex: heroes") ."</p>
 				<p>". __("LocalPlan page: "		)."<input type=\"text\" name=\"morg_wi_localplan_page\" value=\""	.$morg_wi_localplan_page	."\" size=\"90\">". __(" ex: localplan") ."</p>
+				<hr />
+				<p>". __("JsonApi server: "		)."<input type=\"text\" name=\"morg_ah_jsonapi_host\"		value=\""	.$morg_ah_jsonapi_host		."\" size=\"90\">". __(" ex: /var/www/....") ."</p>
+				<p>". __("JsonApi port: "		)."<input type=\"text\" name=\"morg_ah_jsonapi_port\"		value=\""	.$morg_ah_jsonapi_port		."\" size=\"90\">". __(" ex: /var/www/....") ."</p>
+				<p>". __("JsonApi user: "		)."<input type=\"text\" name=\"morg_ah_jsonapi_user\"		value=\""	.$morg_ah_jsonapi_user		."\" size=\"90\">". __(" ex: /var/www/....") ."</p>
+				<p>". __("JsonApi password: "	)."<input type=\"text\" name=\"morg_ah_jsonapi_password\"	value=\""	.$morg_ah_jsonapi_password	."\" size=\"90\">". __(" ex: /var/www/....") ."</p>
+				<p>". __("JsonApi salt: "		)."<input type=\"text\" name=\"morg_ah_jsonapi_salt\"		value=\""	.$morg_ah_jsonapi_salt		."\" size=\"90\">". __(" ex: /var/www/....") ."</p>
 				<hr />
 				<p class=\"submit\">
 					<input type=\"submit\" name=\"Submit\" value=\"". __('Update Options', 'morg_wi_trdom' ) ."\" />
@@ -95,7 +102,7 @@ class morg_web_interface extends morg_wp_plugin{
 	
 	function displayRecipe($name,$arrItems){
 		if($name!='LEVER' && $name!='FENCE'&& $name!='CHEST'){
-			return '';
+		//	return '';
 		}
 
 		$templateRecipe='';
@@ -185,7 +192,7 @@ class morg_web_interface extends morg_wp_plugin{
 		), $atts));
 		$result = "";
 
-		$allPrm = json_decode(file_get_contents(get_option('morg_wi_heroes_folder').'/__allclasses.json'));
+		$allPrm = json_decode(file_get_contents(get_option('morg_wi_export_folder').'/heroes/__allclasses.json'));
 		if(is_object($allPrm)){
 			$allPrm = morg_wp_tools::object2array($allPrm);
 			if ($classe != '___ALL___'){
